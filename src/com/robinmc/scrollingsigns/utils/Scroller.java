@@ -7,7 +7,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class Scroller {
 	
-	private static final char COLOUR_CHAR = '§';
+	private static final char COLOUR_CHAR = ChatColor.COLOR_CHAR;
 	private int position;
 	private List<String> list;
 	private ChatColor colour = ChatColor.RESET;
