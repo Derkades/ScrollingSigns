@@ -1,0 +1,11 @@
+name: ScrollingSigns
+main: com.robinmc.scrollingsigns.Main
+version: 1.0.0
+author: RobinMC
+description: 'asdcascdascd'
+
+commands:
+  setspawn:
+    aliases: scrollingsign
+    description: asdcascd
+    usage: </command>
