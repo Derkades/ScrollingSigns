@@ -3,10 +3,13 @@ package com.robinmc.scrollingsigns;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -28,7 +31,7 @@ public class Main extends JavaPlugin {
 		getCommand("scrollingsign").setExecutor(new ScrollingSignCommand());
 		
 		for (ScrollingSign sign : Main.getScrollingSigns()){
-			new UpdateSignTask(sign).runTaskTimerAsynchronously(plugin, 2*20, 7L);
+			new UpdateSignTask(sign).runTaskTimer(plugin, 2*20, 7L);
 		}
 	}
 	
@@ -53,6 +56,8 @@ public class Main extends JavaPlugin {
 		section.set("line", line); //Integer (0-3)
 		section.set("text", text); //String
 		Main.getPlugin().saveConfig();
+		ScrollingSign scrolling = new ScrollingSign(sign, line, text);
+		new UpdateSignTask(scrolling).runTaskTimer(plugin, 0L, 7L);
 	}
 	
 	public static List<ScrollingSign> getScrollingSigns(){
@@ -65,6 +70,13 @@ public class Main extends JavaPlugin {
 			World world = Bukkit.getWorld(section.getString("loc.world"));
 			int line = section.getInt("line");
 			String text = section.getString("text");
+			Block block = new Location(world, x, y, z).getBlock();
+			if (block.getType() != Material.SIGN_POST){
+				Config.getConfig().set(string, null);
+				Bukkit.getLogger().log(Level.WARNING, "Warning: block at " + x + "," + y + "," + z + " is not a sign anymore. This scrolling sign has been removed from the config.");
+				Main.getPlugin().saveConfig();
+				continue;
+			}
 			Sign sign = (Sign) new Location(world, x, y, z).getBlock().getState();
 			ScrollingSign scroll = new ScrollingSign(sign, line, text);
 			list.add(scroll);
